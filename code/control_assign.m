@@ -188,7 +188,7 @@ for i = 1:length(Kp_values)
 end
 
 % Req 9
-Kp = 4190; % From hand analysis
+Kp = 4189.5; % From hand analysis
 B1=tf([Kp],[1]);
 BlockMat = append(B1,BR1,BR2);
 connectionMap = [1, 3,-2;2,1,0;];
@@ -198,13 +198,44 @@ output = 2;
 new_system_x2 = connect(BlockMat,connectionMap,input ,output);
 closed_loop_tf = tf(new_system_x2);
 % Desired displacement of the second mass is to be 4 m
-[y,t] = step(4*closed_loop_tf(1));
+[y,t] = step(4*closed_loop_tf);
 ess = abs(4-y(end));
+disp(['ess of proportional-only controller = ', num2str(ess)]);
 
 figure();
 plot(t, y);
 title('Step Response (proportional-only controller with Kp=4189.5)');
 
 figure();
-pzmap(closed_loop_tf(1));
+pzmap(closed_loop_tf);
 title('Poles (proportional-only controller with Kp=4189.5)');
+
+% Req 10 (Change Kp and Ki values by trial and error)
+Kp = 100;
+Ki = 10;
+s = tf('s');
+PI_block = Kp + Ki/s;
+BlockMat = append(PI_block, BR1, BR2);
+connectionMap = [1, 3,-2;2,1,0;];
+input = 3;
+output = 2;
+new_system = connect(BlockMat, connectionMap, input, output);
+new_system_tf = tf(new_system);
+
+figure();
+plt = stepplot(new_system, stepDataOptions('InputOffset',0,'StepAmplitude',4));
+setoptions(plt,'RiseTimeLimits',[0,1]);
+
+[y,t] = step(4*new_system);
+ess = abs(4 - y(end));
+
+figure();
+pzmap(new_system_tf);
+
+info = stepinfo(2*new_system_tf);
+
+disp('Effect of PI (Kp and Ki) on Transient Response Parameters:');
+disp('--------------------------------------------------------------------------');
+disp(' Rise Time | Peak Time | Max Peak | Settling Time | Steady-State Error');
+disp('--------------------------------------------------------------------------');
+disp([info.RiseTime, info.PeakTime, info.Peak, info.SettlingTime, ess]);
