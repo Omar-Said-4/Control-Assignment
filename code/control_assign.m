@@ -146,6 +146,7 @@ max_peaks = zeros(size(Kp_values));
 settling_times = zeros(size(Kp_values));
 ess_values = zeros(size(Kp_values));
 figure;
+closed_loop_tfs = [];
 for i = 1:length(Kp_values)
     % Proportional controller
     Kp = Kp_values(i);
@@ -157,6 +158,7 @@ for i = 1:length(Kp_values)
     % Simulate the closed-loop system
     new_system_x2 = connect( BlockMat,connectionMap,input ,output);
     closed_loop_tf = tf(new_system_x2);
+    closed_loop_tfs = [closed_loop_tfs;closed_loop_tf];
     [y, t] = step(2*closed_loop_tf);
     steadyStateValue4 = dcgain(2*closed_loop_tf);
     subplot(2, 2, i);
@@ -178,14 +180,36 @@ for i = 1:length(Kp_values)
     % Calculate steady-state error
     ess_values(i) = 2 - steadyStateValue4;
 end
+figure;
+
+for i = 1:length(closed_loop_tfs)
+    % Create subplot
+    subplot(2, 2, i);
+    
+    % Plot pole-zero map
+    pzmap(closed_loop_tfs(i));
+    p = findobj(gca, 'Type', 'line'); 
+    set(p, 'Color', 'r', 'LineWidth', 2);
+    % Add title
+    title(['Transfer Function of kp ', num2str(Kp_values(i))]);
+end
 % Display the transient response parameters and adjusted steady-state error
 disp('Effect of Proportional Controller Gain (Kp) on Transient Response Parameters:');
 disp('--------------------------------------------------------------------------');
-disp(' Kp | Rise Time | Peak Time | Max Peak | Settling Time | Adjusted Steady-State Error');
-disp('--------------------------------------------------------------------------');
-for i = 1:length(Kp_values)
-    disp([Kp_values(i), rise_times(i), peak_times(i), max_peaks(i), settling_times(i), ess_values(i)]);
-end
+%disp(' Kp | Rise Time | Peak Time | Max Peak | Settling Time | Adjusted Steady-State Error');
+%disp('--------------------------------------------------------------------------');
+disp(' Kps: ')
+disp(Kp_values)
+disp(' Rise Time: ')
+disp(rise_times)
+disp('Peak Time: ')
+disp(peak_times)
+disp('Max Peak: ')
+disp(max_peaks)
+disp(' Settling Time: ')
+disp(settling_times)
+disp(' ess: ')
+disp(ess_values)
 
 % Req 9
 Kp = 4189.5; % From hand analysis
