@@ -177,8 +177,14 @@ for i = 1:length(Kp_values)
     max_peaks(i) = info.Peak;
     settling_times(i) = info.SettlingTime;
     
-    % Calculate steady-state error
-    ess_values(i) = 2 - steadyStateValue4;
+    % Calculate steady-state error ( k = 1000 is unstable so different
+    % calculations are used)
+    if i ~= 4
+        ess_values(i) = 2 - steadyStateValue4;
+    else
+        ess_values(i) = abs(2 - y(end))
+
+    end
 end
 figure;
 
@@ -209,8 +215,9 @@ disp(max_peaks)
 disp(' Settling Time: ')
 disp(settling_times)
 disp(' ess: ')
-disp(ess_values)
-
+disp(ess_values(1:end-1))
+disp(' unstable k = 1000 ess: ')
+disp(ess_values(end))
 % Req 9
 Kp = 4189.5; % From hand analysis
 B1=tf([Kp],[1]);
