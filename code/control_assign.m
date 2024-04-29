@@ -191,7 +191,7 @@ for i = 1:length(closed_loop_tfs)
     p = findobj(gca, 'Type', 'line'); 
     set(p, 'Color', 'r', 'LineWidth', 2);
     % Add title
-    title(['Transfer Function of kp ', num2str(Kp_values(i))]);
+    title(['Transfer Function of kp = ', num2str(Kp_values(i))]);
 end
 % Display the transient response parameters and adjusted steady-state error
 disp('Effect of Proportional Controller Gain (Kp) on Transient Response Parameters:');
