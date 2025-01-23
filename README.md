@@ -1,8 +1,8 @@
 # Control Assignment
 
 
-- For Assignment details, kindly check [Control_Assignment.pdf](Control_Assignment.pdf).
-- For Implementation details, kindly check [control_assign.m](code/control_assign.m).
+- For Assignment details, kindly check [Control_Assignment.pdf](Control_Assignment.pdf)
+- For Implementation details, kindly check [control_assign.m](code/control_assign.m)
 
 ## ✍️Contributors <a name = "contributors"></a>
 <table>
